@@ -24,6 +24,15 @@
   .nav-tab { background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--gray); padding: 18px 14px 16px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; letter-spacing: .04em; transition: color .2s, border-color .2s; }
   .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); background: var(--overlay); font-weight: 700; }
 
+  /* CURRENCY SELECTOR BAR */
+  .currency-bar { background: rgba(22,32,44,0.7); border-bottom: 1px solid var(--border); padding: 10px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .currency-bar-label { color: var(--gray); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+  .currency-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .currency-pill { background: transparent; border: 1px solid var(--border); border-radius: 100px; color: var(--gray); padding: 5px 16px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; white-space: nowrap; }
+  .currency-pill.active { background: linear-gradient(135deg, var(--gold), var(--gold-alt)); border-color: var(--gold); color: var(--dark); box-shadow: 0 2px 12px rgba(212,175,127,.3); }
+  .currency-pill:hover:not(.active) { border-color: var(--gold); color: var(--gold); }
+  .currency-rate-info { margin-left: auto; color: var(--gray); font-size: 12px; }
+
   /* LAYOUT */
   .container { max-width: 960px; margin: 0 auto; padding: 32px 20px 60px; }
   .phrase-ticker { text-align: center; height: 24px; margin-bottom: 32px; color: var(--gold-soft); font-size: 14px; font-style: italic; letter-spacing: .04em; opacity: .85; }
@@ -70,6 +79,14 @@
   .result-box { margin-top: 16px; padding: 16px; background: var(--overlay); border-radius: 10px; border: 1px solid var(--border); color: var(--gold-soft); font-size: 14px; text-align: center; line-height: 1.8; font-style: italic; }
   .result-box strong { color: var(--gold); font-style: normal; }
 
+  /* INSIGHT BOX */
+  .insight-box { margin-top: 16px; padding: 20px; background: linear-gradient(135deg, rgba(212,175,127,0.08), rgba(198,154,107,0.05)); border-radius: 12px; border: 1px solid rgba(212,175,127,0.3); }
+  .insight-title { color: var(--gold); font-weight: 700; font-size: 15px; margin-bottom: 12px; }
+  .insight-list { list-style: none; }
+  .insight-list li { color: var(--cream); font-size: 14px; line-height: 1.8; padding: 6px 0; border-bottom: 1px solid rgba(47,62,80,0.5); }
+  .insight-list li:last-child { border-bottom: none; }
+  .insight-list li span { color: var(--gold); font-weight: 600; }
+
   /* MÉTODO */
   .metodo-card { display: flex; gap: 20px; align-items: flex-start; }
   .metodo-icon { font-size: 28px; line-height: 1; min-width: 40px; }
@@ -89,12 +106,16 @@
   /* FOOTER */
   footer { border-top: 1px solid var(--border); padding: 20px; text-align: center; color: var(--gray); font-size: 12px; letter-spacing: .06em; }
 
+  /* HIGHLIGHT TAG */
+  .tag-new { background: linear-gradient(135deg, var(--gold), var(--gold-alt)); color: var(--dark); font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 100px; letter-spacing: .08em; vertical-align: middle; margin-left: 4px; }
+
   /* MOBILE */
   @media(max-width:600px) {
     .nav-tab { padding: 14px 10px 12px; font-size: 12px; }
     .page-title { font-size: 22px; }
     .stat-value { font-size: 18px; }
     .btn-gold { padding: 12px 20px; font-size: 14px; }
+    .currency-bar { padding: 8px 14px; }
   }
 </style>
 </head>
@@ -110,8 +131,22 @@
   <button class="nav-tab" onclick="goTab(2,this)">Liberdade Financeira</button>
   <button class="nav-tab" onclick="goTab(3,this)">Simulador Dólar</button>
   <button class="nav-tab" onclick="goTab(4,this)">ETFs</button>
-  <button class="nav-tab" onclick="goTab(5,this)">Método DOLARA</button>
+  <button class="nav-tab" onclick="goTab(5,this)">Meta de Renda<span class="tag-new">NOVO</span></button>
+  <button class="nav-tab" onclick="goTab(6,this)">Método DOLARA</button>
 </nav>
+
+<!-- CURRENCY BAR GLOBAL -->
+<div class="currency-bar">
+  <span class="currency-bar-label">Moeda Global</span>
+  <div class="currency-pills">
+    <button class="currency-pill" onclick="setCurrency('USD')">$ Dólar</button>
+    <button class="currency-pill active" onclick="setCurrency('USD')" id="pill-USD">$ USD</button>
+    <button class="currency-pill" id="pill-EUR" onclick="setCurrency('EUR')">€ EUR</button>
+    <button class="currency-pill" id="pill-BRL" onclick="setCurrency('BRL')">R$ BRL</button>
+    <button class="currency-pill" id="pill-KRW" onclick="setCurrency('KRW')">₩ KRW</button>
+  </div>
+  <span class="currency-rate-info" id="currency-rate-info">Moeda selecionada: USD</span>
+</div>
 
 <div class="container">
   <div class="phrase-ticker" id="ticker">✦ Pequenos aportes constroem grandes patrimônios.</div>
@@ -137,6 +172,7 @@
         <button class="btn-gold btn-small" onclick="goTabByIndex(2)">Liberdade Financeira</button>
         <button class="btn-gold btn-small" onclick="goTabByIndex(3)">Simulador Dólar</button>
         <button class="btn-gold btn-small" onclick="goTabByIndex(4)">ETFs</button>
+        <button class="btn-gold btn-small" onclick="goTabByIndex(5)">Meta de Renda ✨</button>
       </div>
     </div>
   </div>
@@ -180,9 +216,9 @@
     <p class="page-sub">Descubra quando você pode parar de trabalhar por obrigação</p>
     <div class="glass card">
       <div class="form-grid">
-        <div><label class="flabel">Custo de vida mensal (R$)</label><input type="number" id="fi-custo" value="5000"/></div>
-        <div><label class="flabel">Patrimônio atual (R$)</label><input type="number" id="fi-pat" value="50000"/></div>
-        <div><label class="flabel">Aporte mensal (R$)</label><input type="number" id="fi-aporte" value="1000"/></div>
+        <div><label class="flabel">Custo de vida mensal</label><input type="number" id="fi-custo" value="5000"/></div>
+        <div><label class="flabel">Patrimônio atual</label><input type="number" id="fi-pat" value="50000"/></div>
+        <div><label class="flabel">Aporte mensal</label><input type="number" id="fi-aporte" value="1000"/></div>
         <div><label class="flabel">Retorno esperado (%/ano)</label><input type="number" id="fi-retorno" value="8" step="0.1"/></div>
       </div>
       <div class="btn-row"><button class="btn-gold" onclick="calcFI()">Calcular Independência</button></div>
@@ -191,9 +227,9 @@
       <div class="stat-row" id="fi-stats"></div>
       <div class="glass card">
         <div class="progress-labels">
-          <span id="fi-prog-left">R$ 0</span>
+          <span id="fi-prog-left">0</span>
           <span id="fi-prog-pct" style="color:var(--gold)">0%</span>
-          <span id="fi-prog-right">R$ 0</span>
+          <span id="fi-prog-right">0</span>
         </div>
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="fi-bar" style="width:0%"></div></div>
         <div class="result-box" id="fi-box"></div>
@@ -237,8 +273,8 @@
             <option value="div">ETF Dividendos — 7.5%/ano</option>
           </select>
         </div>
-        <div><label class="flabel">Valor Inicial (USD)</label><input type="number" id="etf-inicial" value="10000"/></div>
-        <div><label class="flabel">Aporte Mensal (USD)</label><input type="number" id="etf-mensal" value="500"/></div>
+        <div><label class="flabel">Valor Inicial</label><input type="number" id="etf-inicial" value="10000"/></div>
+        <div><label class="flabel">Aporte Mensal</label><input type="number" id="etf-mensal" value="500"/></div>
         <div><label class="flabel">Período (anos)</label><input type="number" id="etf-anos" value="20"/></div>
         <div class="check-row" style="align-self:end;padding-bottom:4px">
           <input type="checkbox" id="etf-reinv" checked/>
@@ -256,8 +292,81 @@
     </div>
   </div>
 
-  <!-- ── MÉTODO DOLARA ── -->
+  <!-- ── META DE RENDA PASSIVA ── -->
   <div class="tab-page" id="page-5">
+    <h2 class="page-title">Meta de Renda Passiva</h2>
+    <p class="page-sub">Descubra quanto você precisa acumular e o que aportar para viver da renda</p>
+
+    <div class="glass card">
+      <div class="form-grid">
+        <div>
+          <label class="flabel">Renda passiva desejada/mês</label>
+          <input type="number" id="rp-renda" value="2500"/>
+        </div>
+        <div>
+          <label class="flabel">Moeda da meta</label>
+          <select id="rp-moeda">
+            <option value="USD">USD — Dólar</option>
+            <option value="EUR">EUR — Euro</option>
+            <option value="BRL">BRL — Real</option>
+            <option value="KRW">KRW — Won</option>
+          </select>
+        </div>
+        <div>
+          <label class="flabel">Patrimônio atual (na mesma moeda)</label>
+          <input type="number" id="rp-pat" value="1000"/>
+        </div>
+        <div>
+          <label class="flabel">Prazo para atingir (anos)</label>
+          <input type="number" id="rp-prazo" value="15"/>
+        </div>
+        <div>
+          <label class="flabel">Retorno esperado (%/ano)</label>
+          <input type="number" id="rp-retorno" value="7" step="0.1"/>
+        </div>
+        <div>
+          <label class="flabel">Taxa de retirada (%/ano)</label>
+          <select id="rp-retirada">
+            <option value="4">4% — Regra dos 4% (conservadora)</option>
+            <option value="5">5% — Moderada</option>
+            <option value="6">6% — Agressiva</option>
+            <option value="3">3% — Ultra-conservadora</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-gold" onclick="calcRP()">Calcular Meta</button>
+        <button class="btn-gold btn-small" onclick="resetRP()">Resetar</button>
+      </div>
+    </div>
+
+    <div id="rp-result" style="display:none">
+      <div class="stat-row" id="rp-stats"></div>
+
+      <div class="glass card">
+        <div class="chart-label">Evolução do Patrimônio até a Meta</div>
+        <div class="chart-wrap"><canvas id="rpChart"></canvas></div>
+      </div>
+
+      <div class="glass card">
+        <div class="progress-labels">
+          <span id="rp-prog-left">0</span>
+          <span id="rp-prog-pct" style="color:var(--gold)">0%</span>
+          <span id="rp-prog-right">0</span>
+        </div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="rp-bar" style="width:0%"></div></div>
+        <div class="result-box" id="rp-box"></div>
+      </div>
+
+      <div class="glass card insight-box">
+        <div class="insight-title">Análise do seu cenário</div>
+        <ul class="insight-list" id="rp-insights"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MÉTODO DOLARA ── -->
+  <div class="tab-page" id="page-6">
     <h2 class="page-title">Método DOLARA</h2>
     <p class="page-sub">Uma filosofia de construção de patrimônio global e liberdade geográfica</p>
 
@@ -285,7 +394,7 @@
     <div class="glass card metodo-cta">
       <div class="metodo-cta-title">Investidora Sem Fronteiras</div>
       <p class="metodo-cta-text">A DOLARA nasceu da convicção de que qualquer pessoa pode construir patrimônio global com estratégia, consistência e as ferramentas certas. Você já começou.</p>
-      <div style="margin-top:20px"><button class="btn-gold" onclick="goTabByIndex(1)">Começar a Simular</button></div>
+      <div style="margin-top:20px"><button class="btn-gold" onclick="goTabByIndex(5)">Simular Minha Meta ✨</button></div>
     </div>
   </div>
 </div>
@@ -296,18 +405,38 @@
 // ── UTILITIES ──
 const $ = id => document.getElementById(id);
 const sym = { USD:'$', BRL:'R$', EUR:'€', KRW:'₩' };
+const symName = { USD:'USD', BRL:'BRL', EUR:'EUR', KRW:'KRW' };
 const etfData = {
   sp500:  { name:'S&P 500',        avg:10.5, div:1.3 },
   nasdaq: { name:'Nasdaq',         avg:13.2, div:0.7 },
   global: { name:'ETF Global',     avg:8.8,  div:2.1 },
   div:    { name:'ETF Dividendos', avg:7.5,  div:4.5 },
 };
+
+// ── GLOBAL CURRENCY ──
+let globalCurrency = 'USD';
+function setCurrency(cur) {
+  globalCurrency = cur;
+  document.querySelectorAll('.currency-pill').forEach(p => p.classList.remove('active'));
+  $('pill-'+cur).classList.add('active');
+  const names = { USD:'Dólar Americano (USD)', EUR:'Euro (EUR)', BRL:'Real Brasileiro (BRL)', KRW:'Won Coreano (KRW)' };
+  $('currency-rate-info').textContent = 'Moeda selecionada: ' + names[cur];
+  // Sync moeda selects on tabs
+  ['ci-moeda','rp-moeda'].forEach(id => { const el = $(id); if(el) el.value = cur; });
+}
+// Init pills (remove duplicate USD pill from HTML mistake)
+document.querySelectorAll('.currency-pill').forEach(p => {
+  if(!p.id) p.remove();
+});
+setCurrency('USD');
+
 function fmt(n) {
   if(n>=1e6) return (n/1e6).toFixed(2)+'M';
   if(n>=1e3) return (n/1e3).toFixed(1)+'K';
   return n.toFixed(0);
 }
 function fmtFull(n) { return new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n); }
+function fmtSym(n, cur) { return (sym[cur]||'$') + fmt(n); }
 
 // ── TABS ──
 const tabs = document.querySelectorAll('.nav-tab');
@@ -329,6 +458,7 @@ const phrases = [
   '✦ Seu futuro financeiro começa hoje.',
   '✦ Construindo patrimônio global, uma decisão por vez.',
   '✦ Investir em dólar é investir no seu futuro.',
+  '✦ Renda passiva é liberdade de escolha.',
 ];
 let pi = 0;
 setInterval(()=>{ pi=(pi+1)%phrases.length; $('ticker').textContent=phrases[pi]; },4000);
@@ -342,6 +472,11 @@ const chartDefaults = {
     y:{ ticks:{color:'#C2C7CE',font:{size:10}}, grid:{color:'rgba(47,62,80,0.6)'} }
   }
 };
+
+// ── STAT CARD ──
+function statCard(label,value,sub,color='var(--gold)'){
+  return `<div class="glass stat"><div class="stat-label">${label}</div><div class="stat-value" style="color:${color}">${value}</div>${sub?`<div class="stat-sub">${sub}</div>`:''}</div>`;
+}
 
 // ── DASHBOARD CHART ──
 let dashChart;
@@ -359,11 +494,6 @@ function renderDashChart() {
   }}});
 }
 renderDashChart();
-
-// ── STAT CARD ──
-function statCard(label,value,sub,color='var(--gold)'){
-  return `<div class="glass stat"><div class="stat-label">${label}</div><div class="stat-value" style="color:${color}">${value}</div>${sub?`<div class="stat-sub">${sub}</div>`:''}</div>`;
-}
 
 // ── JUROS COMPOSTOS ──
 let ciChart;
@@ -406,6 +536,7 @@ function resetCI() {
 
 // ── LIBERDADE FINANCEIRA ──
 function calcFI() {
+  const cur = globalCurrency, s = sym[cur];
   const custo=+$('fi-custo').value, pat=+$('fi-pat').value,
         aporte=+$('fi-aporte').value, ret=+$('fi-retorno').value;
   const patNec=custo*12/(ret/100);
@@ -414,14 +545,14 @@ function calcFI() {
   const renda=p*(ret/100)/12, prog=Math.min((pat/patNec)*100,100);
   const anos=Math.floor(meses/12), mResto=meses%12;
   $('fi-stats').innerHTML=
-    statCard('Patrimônio Necessário','R$'+fmt(patNec))+
+    statCard('Patrimônio Necessário',s+fmt(patNec))+
     statCard('Você atinge em',`${anos}a ${mResto}m`,null,'#6EE7B7')+
-    statCard('Renda Passiva','R$'+fmt(renda)+'/mês');
-  $('fi-prog-left').textContent='R$ '+fmtFull(pat);
+    statCard('Renda Passiva',s+fmt(renda)+'/mês');
+  $('fi-prog-left').textContent=s+fmtFull(pat);
   $('fi-prog-pct').textContent=prog.toFixed(1)+'%';
-  $('fi-prog-right').textContent='R$ '+fmtFull(patNec);
+  $('fi-prog-right').textContent=s+fmtFull(patNec);
   setTimeout(()=>{ $('fi-bar').style.width=prog+'%'; },50);
-  $('fi-box').innerHTML=`Em <strong>${anos} anos e ${mResto} meses</strong>, seu patrimônio acumulado será de <strong>R$ ${fmtFull(p)}</strong>, gerando uma renda passiva de <strong>R$ ${fmtFull(renda)}/mês</strong>.`;
+  $('fi-box').innerHTML=`Em <strong>${anos} anos e ${mResto} meses</strong>, seu patrimônio acumulado será de <strong>${s}${fmtFull(p)}</strong>, gerando uma renda passiva de <strong>${s}${fmtFull(renda)}/mês</strong>.`;
   $('fi-result').style.display='block';
 }
 
@@ -458,6 +589,7 @@ function calcDol() {
 let etfChart;
 function calcETF() {
   const key=$('etf-sel').value, e=etfData[key];
+  const cur = globalCurrency, s = sym[cur];
   const inicial=+$('etf-inicial').value, mensal=+$('etf-mensal').value,
         anos=+$('etf-anos').value, reinv=$('etf-reinv').checked;
   const r=e.avg/100/12, dv=e.div/100/12;
@@ -471,9 +603,9 @@ function calcETF() {
   }
   const cresc=((total-inv)/inv*100);
   $('etf-stats').innerHTML=
-    statCard('Patrimônio Final','$'+fmt(total))+
-    statCard('Total Investido','$'+fmt(inv))+
-    statCard('Dividendos Recebidos','$'+fmt(divAcc),null,'#6EE7B7')+
+    statCard('Patrimônio Final',s+fmt(total))+
+    statCard('Total Investido',s+fmt(inv))+
+    statCard('Dividendos Recebidos',s+fmt(divAcc),null,'#6EE7B7')+
     statCard('Crescimento','+'+cresc.toFixed(0)+'%',null,'var(--gold-soft)');
   $('etf-chart-label').textContent='Projeção '+e.name;
   $('etf-result').style.display='block';
@@ -485,8 +617,111 @@ function calcETF() {
     { label:'Patrimônio', data:pats, borderColor:'#D4AF7F', backgroundColor:grad, fill:true, tension:.4, pointRadius:0, borderWidth:2 },
     { label:'Investido',  data:invs, borderColor:'#6EE7B7', backgroundColor:'transparent', tension:.4, pointRadius:0, borderWidth:1.5, borderDash:[5,5] },
   ]}, options:{...chartDefaults, scales:{
-    x:{...chartDefaults.scales.x}, y:{...chartDefaults.scales.y, ticks:{...chartDefaults.scales.y.ticks, callback:v=>'$'+fmt(v)}}
+    x:{...chartDefaults.scales.x}, y:{...chartDefaults.scales.y, ticks:{...chartDefaults.scales.y.ticks, callback:v=>s+fmt(v)}}
   }}});
+}
+
+// ── META DE RENDA PASSIVA ──
+let rpChart;
+function calcRP() {
+  const rendaMensal = +$('rp-renda').value;
+  const moeda = $('rp-moeda').value;
+  const s = sym[moeda];
+  const patAtual = +$('rp-pat').value;
+  const prazo = +$('rp-prazo').value;
+  const retorno = +$('rp-retorno').value;
+  const retirada = +$('rp-retirada').value;
+
+  // Patrimônio necessário pela regra de retirada escolhida
+  const rendaAnual = rendaMensal * 12;
+  const patNecessario = rendaAnual / (retirada / 100);
+
+  // Calcular aporte mensal necessário (PMT)
+  const r = retorno / 100 / 12;
+  const n = prazo * 12;
+  const fv = patNecessario;
+  const pv = patAtual;
+  // FV = PV*(1+r)^n + PMT*((1+r)^n - 1)/r  =>  PMT = (FV - PV*(1+r)^n) * r / ((1+r)^n - 1)
+  const factor = Math.pow(1 + r, n);
+  const aporteMensal = (fv - pv * factor) * r / (factor - 1);
+
+  // Verificar se meta é atingível
+  const atingivel = aporteMensal > 0;
+
+  // Simular evolução ano a ano
+  const labels = [], pats = [], metas = [];
+  let p = patAtual;
+  for (let m = 1; m <= n; m++) {
+    p = p * (1 + r) + (atingivel ? aporteMensal : 0);
+    if (m % 12 === 0) {
+      labels.push('Ano ' + (m / 12));
+      pats.push(+p.toFixed(2));
+      metas.push(+patNecessario.toFixed(2));
+    }
+  }
+
+  const prog = Math.min((patAtual / patNecessario) * 100, 100);
+  const totalAportado = atingivel ? aporteMensal * n + patAtual : patAtual;
+  const jurosGerados = p - totalAportado;
+  const rendaReal = p * (retirada / 100) / 12;
+
+  // Stats
+  $('rp-stats').innerHTML =
+    statCard('Patrimônio necessário', s + fmt(patNecessario), fmtFull(patNecessario)) +
+    statCard('Aporte mensal necessário', atingivel ? s + fmt(aporteMensal) : 'Meta atingida!', null, atingivel ? 'var(--gold)' : '#6EE7B7') +
+    statCard('Renda passiva ao atingir', s + fmt(rendaReal) + '/mês', null, '#6EE7B7') +
+    statCard('Juros trabalhando por você', s + fmt(jurosGerados), null, 'var(--gold-soft)');
+
+  // Progress bar
+  $('rp-prog-left').textContent = s + fmtFull(patAtual);
+  $('rp-prog-pct').textContent = prog.toFixed(1) + '%';
+  $('rp-prog-right').textContent = s + fmtFull(patNecessario);
+  setTimeout(() => { $('rp-bar').style.width = prog + '%'; }, 50);
+
+  // Result box
+  $('rp-box').innerHTML = atingivel
+    ? `Para ter <strong>${s}${fmtFull(rendaMensal)}/mês</strong> de renda passiva em <strong>${prazo} anos</strong>, você precisa acumular <strong>${s}${fmtFull(patNecessario)}</strong>. Isso exige um aporte mensal de <strong>${s}${fmtFull(aporteMensal)}</strong> com retorno de ${retorno}% ao ano.`
+    : `Com seus aportes atuais e ${retorno}% ao ano, você já supera a meta! Considere aumentar a renda alvo ou reduzir o prazo.`;
+
+  // Insights
+  const anoInicio = new Date().getFullYear() + 1;
+  const anoFim = anoInicio + prazo - 1;
+  const totalContribuido = atingivel ? aporteMensal * n : 0;
+  $('rp-insights').innerHTML = `
+    <li>📅 Início dos aportes: <span>${anoInicio}</span> · Meta em: <span>${anoFim}</span></li>
+    <li>💼 Total que você vai contribuir: <span>${s}${fmtFull(totalContribuido + patAtual)}</span></li>
+    <li>📈 Juros compostos vão gerar: <span>${s}${fmtFull(Math.max(0, jurosGerados))}</span> extras para você</li>
+    <li>🏦 Pela Regra dos ${retirada}%, você pode retirar <span>${s}${fmtFull(rendaReal)}/mês</span> sem consumir o patrimônio</li>
+    <li>🌍 Seu patrimônio continua crescendo mesmo após aposentar</li>
+  `;
+
+  $('rp-result').style.display = 'block';
+
+  // Chart
+  const ctx = $('rpChart').getContext('2d');
+  if (rpChart) rpChart.destroy();
+  const grad = ctx.createLinearGradient(0, 0, 0, 220);
+  grad.addColorStop(0, 'rgba(212,175,127,0.35)'); grad.addColorStop(1, 'rgba(212,175,127,0)');
+  rpChart = new Chart(ctx, {
+    type: 'line', data: { labels, datasets: [
+      { label: 'Patrimônio acumulado', data: pats, borderColor: '#D4AF7F', backgroundColor: grad, fill: true, tension: .4, pointRadius: 0, borderWidth: 2 },
+      { label: 'Meta', data: metas, borderColor: '#6EE7B7', backgroundColor: 'transparent', tension: 0, pointRadius: 0, borderWidth: 1.5, borderDash: [6, 4] },
+    ]}, options: { ...chartDefaults, scales: {
+      x: { ...chartDefaults.scales.x },
+      y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v => s + fmt(v) } }
+    }}
+  });
+}
+
+function resetRP() {
+  $('rp-renda').value = 2500;
+  $('rp-moeda').value = 'USD';
+  $('rp-pat').value = 1000;
+  $('rp-prazo').value = 15;
+  $('rp-retorno').value = 7;
+  $('rp-retirada').value = 4;
+  $('rp-result').style.display = 'none';
+  if (rpChart) { rpChart.destroy(); rpChart = null; }
 }
 </script>
 </body>
